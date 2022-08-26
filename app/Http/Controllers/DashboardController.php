@@ -8,7 +8,7 @@ use App\Models\Emodul;
 use App\Models\User;
 use App\Models\Prodi;
 
-class DashboardController extends controller 
+class DashboardController extends Controller
 {
     public function __construct()
     {
