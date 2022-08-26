@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class MatakuliahController extends Controller 
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
         $matkul = Matakuliah::orderBy('id', 'asc')->with('prodis')->get();
@@ -34,7 +39,7 @@ class MatakuliahController extends Controller
 
     public function showBySlug($slug)
     {
-        $emodulByMatkul = Matakuliah::where('slug', $slug)->with('emoduls')->get();
+        $emodulByMatkul = Matakuliah::where('slug', $slug)->with('emoduls', 'prodis')->get();
 
         return response()->json([
             'data' => $emodulByMatkul

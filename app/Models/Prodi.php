@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Prodi extends Model
 {
     protected $fillable = [
-        'jenjang', 'prodi', 'slug'
+        'jenjang', 'prodi', 'slug', 'image'
     ];
 
     public function users()
@@ -17,7 +17,7 @@ class Prodi extends Model
 
     public function emoduls()
     {
-        return $this->hasMany(Emodul::class);
+        return $this->hasMany(Emodul::class)->with('matakuliahs');
     }
 
     public function matakuliahs()

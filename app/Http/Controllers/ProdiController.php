@@ -9,7 +9,10 @@ use App\Models\Prodi;
 
 class ProdiController extends Controller 
 {
-    
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     public function index()
     {
@@ -20,18 +23,17 @@ class ProdiController extends Controller
         ], 200);
     }
 
+    public function dashboard()
+    {
+        
+    }
+
     public function show($id)
     {
         $prodi = Prodi::find($id);
 
-        if ($prodi == null) {
-            return response()->json([
-                'message' => 'data tidak ditemukan'
-            ]);
-        }
-
         return response()->json([
-            'data' => $prodi
+            'data' => $prodi,
         ], 200);
     }
 
@@ -51,13 +53,19 @@ class ProdiController extends Controller
             'prodi' => 'required|string',
         ]);
         
-
-        // $input = $request->all();
-        // $prodi = Prodi::create($input);
         $prodi = new Prodi;
         $prodi->jenjang = $request->jenjang;
         $prodi->prodi = $request->prodi;
         $prodi->slug = Str::slug($request->prodi, '-');
+        
+        if($request->hasFile('image')) {
+            $file = $request->image;
+            $fileName = Str::slug($request->prodi, '-') . '_' . $file->getClientOriginalName();
+            $file->move('storage/images', $fileName);
+
+            $prodi->image = $fileName;
+        }
+
         $prodi->save();
 
         return response()->json([
@@ -81,6 +89,19 @@ class ProdiController extends Controller
             'jenjang' => 'required|string|max:2',
             'prodi' => 'required|string'
         ]);
+
+        if($request->hasFile('image')) {
+            $currentImage = 'storage/images/' . $prodi->image;
+            if(file_exists($currentImage)) {
+                unlink($currentImage);
+            }
+
+            $newFile = $request->image;
+            $fileName = Str::slug($request->prodi, '-') . '_' . $newFile->getClientOriginalName();
+            $newFile->move('storage/images', $fileName);
+
+            $prodi->image = $fileName;
+        }
         
         $input = array(
             $prodi->jenjang = $request->jenjang,
@@ -99,12 +120,16 @@ class ProdiController extends Controller
     public function delete($id)
     {
         $prodi = Prodi::find($id);
+        if($prodi->image != null) {
+            unlink('storage/images/' . $prodi->image);
+        }
 
         if($prodi == null){
             return response()->json([
                 'message' => 'Data tidak ditemukan'
             ]);
         }
+        
 
         $prodi->delete();
 

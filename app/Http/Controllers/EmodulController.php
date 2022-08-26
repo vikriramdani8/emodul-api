@@ -7,28 +7,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\Emodul;
 use App\Models\Module;
-use App\Models\User;
-use App\Models\Matakuliah;
-use App\Models\Prodi;
 use File;
 
 class EmodulController extends Controller 
 {
-    public function dashboard()
+    public function __construct()
     {
-        $emodul = Emodul::orderBy('id', 'asc')->get();
-        $user = User::orderBy('id', 'asc')->get();
-        $prodi = Prodi::orderBy('id', 'asc')->get();
-        $matkul = Matakuliah::orderBy('id', 'asc')->get();
-
-        return response()->json([
-            'emodul' => $emodul,
-            'user' => $user,
-            'prodi' => $prodi,
-            'matkul' => $matkul
-        ], 200);
+        $this->middleware('auth:api');
     }
-
 
     public function index()
     {
@@ -41,7 +27,7 @@ class EmodulController extends Controller
 
     public function showBySlug($slug)
     {
-        $emodul = Emodul::where('slug', $slug)->with('modules')->get();
+        $emodul = Emodul::where('slug', $slug)->with('modules', 'prodis', 'matakuliahs')->get();
 
         return response()->json([
             'data' => $emodul

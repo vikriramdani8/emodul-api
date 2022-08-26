@@ -7,6 +7,11 @@ use App\Models\User;
 
 class UserController extends Controller 
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
         $user = User::orderBy('role_id','desc')->with('prodi','role')->get();

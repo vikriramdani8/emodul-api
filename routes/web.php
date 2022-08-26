@@ -22,14 +22,16 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->post('/login', 'AuthController@login');
     $router->post('/logout', 'AuthController@logout');
 
-    $router->get('/dashboard', 'EmodulController@dashboard');
+    $router->get('/dashboard', 'DashboardController@index');
+    $router->get('/emodul-prodi', 'DashboardController@getEmodulByProdi');
+    $router->get('/emodul-prodi/{slug}', 'DashboardController@getModulBySlug');
 
     // Prodi
     $router->get('/prodi', 'ProdiController@index');
     $router->get('/prodi/detail/{id}', 'ProdiController@show');
     $router->get('/prodi/{slug}', 'ProdiController@showBySlug');
     $router->post('/prodi', 'ProdiController@store');
-    $router->put('/prodi/{id}', 'ProdiController@update');
+    $router->post('/prodi/{id}', 'ProdiController@update');
     $router->delete('/prodi/{id}', 'ProdiController@delete');
 
     // Matakuliah
