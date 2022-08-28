@@ -91,9 +91,11 @@ class ProdiController extends Controller
         ]);
 
         if($request->hasFile('image')) {
-            $currentImage = 'storage/images/' . $prodi->image;
-            if(file_exists($currentImage)) {
-                unlink($currentImage);
+            if($prodi->image != null) {
+                $currentImage = 'storage/images/' . $prodi->image;
+                if(file_exists($currentImage)) {
+                    unlink($currentImage);
+                }
             }
 
             $newFile = $request->image;
